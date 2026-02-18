@@ -1,11 +1,12 @@
-FROM maven:3.8.8-jdk-17-slim AS builder
+# Usa esta imagen que es más moderna y compatible
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY pom.xml mvnw .
-COPY src ./src
-RUN mvn -B -DskipTests package -DskipITs
+COPY . .
+RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jre-jammy
+# Fase de ejecución
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=builder /app/target/docker-pipeline-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
