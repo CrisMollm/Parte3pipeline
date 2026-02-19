@@ -6,13 +6,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "orders")
 public class OrderEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_seq")
+    @SequenceGenerator(name = "orders_seq", sequenceName = "orders_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne
