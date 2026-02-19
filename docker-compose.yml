@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   db:
     image: postgres:15
@@ -10,11 +9,18 @@ services:
       - "5432:5432"
     volumes:
       - ./src/main/resources/db:/docker-entrypoint-initdb.d:ro
+    # NUEVO: Verifica que la DB esté lista
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dockerpipeline"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy # NUEVO: No arranca la app hasta que la DB pase el test
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/dockerpipeline
       SPRING_DATASOURCE_USERNAME: postgres
