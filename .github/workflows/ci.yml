@@ -26,8 +26,32 @@ jobs:
       - name: Run Checkstyle
         run: mvn -B checkstyle:check || true
 
+      - name: Start DB with Docker Compose
+        run: |
+          docker compose up -d db
+
+      - name: Wait for Postgres to be ready
+        run: |
+          # espera hasta 30 intentos (≈150s)
+          container=$(docker compose ps -q db)
+          for i in $(seq 1 30); do
+            if docker exec -T $container pg_isready -U postgres -d dockerpipeline >/dev/null 2>&1; then
+              echo "Postgres is ready"
+              exit 0
+            fi
+            echo "Waiting for Postgres... ($i)"
+            sleep 5
+          done
+          echo "Postgres did not become healthy in time"
+          docker compose logs db
+          exit 1
+
       - name: Build and run tests with Maven
         run: mvn -B -DskipTests=false package
+
+      - name: Tear down Docker Compose
+        if: always()
+        run: docker compose down --volumes
 
       - name: Build Docker image (local test)
         uses: docker/build-push-action@v4
