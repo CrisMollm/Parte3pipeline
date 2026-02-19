@@ -46,7 +46,7 @@ public class ProductRepositoryTest {
 
     @Test
     void deleteProduct() {
-        Product p = new Product("TD","d@example.com".hashCode());
+        Product p = new Product("TD", 29.99);
         Product saved = repo.save(p);
         Long id = saved.getId();
         repo.deleteById(id);
