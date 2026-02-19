@@ -9,12 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.example.dockerpipeline.model.OrderEntity;
 
 @SpringBootTest
 @Sql("/db/init.sql")
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class OrderRepositoryTest {
 
     @Autowired

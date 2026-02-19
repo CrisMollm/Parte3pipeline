@@ -1,9 +1,17 @@
--- 1. Borrar tablas si existen
+-- 1. Borrar tablas y secuencias si existen
+DROP SEQUENCE IF EXISTS users_seq;
+DROP SEQUENCE IF EXISTS products_seq;
+DROP SEQUENCE IF EXISTS orders_seq;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- 2. Crear tablas
+-- 2. Crear secuencias de Hibernate
+CREATE SEQUENCE users_seq START WITH 11;
+CREATE SEQUENCE products_seq START WITH 11;
+CREATE SEQUENCE orders_seq START WITH 11;
+
+-- 3. Crear tablas
 CREATE TABLE users (
     id BIGINT PRIMARY KEY,
     name VARCHAR(255),
